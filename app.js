@@ -11,8 +11,8 @@ const displayAllMeals = (meals) =>{
     const mealContainer = document.getElementById('meal-container');
     mealContainer.innerHTML = '';
     meals.forEach(meal => {
-        const {strMealThumb, strMeal } =meal;
-        console.log(meal);
+        const {strMealThumb, strMeal, idMeal } =meal;
+        // console.log(meal);
         const mealDiv = document.createElement('div');
         mealDiv.innerHTML = `
         <div class="card w-96 bg-base-100 shadow-xl">
@@ -23,7 +23,7 @@ const displayAllMeals = (meals) =>{
           <p class="card-title">${strMeal.slice(0, 15)}</p>
           
           <div class="card-actions">
-            <button class="btn btn-primary">Buy Now</button>
+            <label for="my-modal" onclick ="loadMealDetails(${idMeal})"  class="btn btn-primary">Details</label>
           </div>
         </div>
       </div>
@@ -34,7 +34,27 @@ const displayAllMeals = (meals) =>{
 }
 
 
+const loadMealDetails =(idMeal) =>{
+    const url =`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`;
+    fetch(url)
+    .then(res =>res.json())
+    .then(data =>displayMealDetails(data.meals[0]))
+    
+}
 
+const displayMealDetails = (meal) =>{
+        console.log(meal);
+        const {strCategory, strMealThumb, strTags} = meal;
+    const modalContainer = document.getElementById('modal-body') ;
+    modalContainer.innerHTML = `
+        <div>
+        <img src="${strMealThumb}" alt="" />
+        </div>
+        <h3>${strCategory}</h3>
+        <p>${strTags}</p>
+    ` ;  
+    
+}
 
 const searchMeals =() =>{
     const searchText = document.getElementById('search-field') ;
@@ -44,5 +64,9 @@ const searchMeals =() =>{
 
     searchText.value = ' ';
 }
+
+
+
+
 
 loadAllMeals('fish');
